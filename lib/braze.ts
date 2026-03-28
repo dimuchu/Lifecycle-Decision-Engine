@@ -1,6 +1,7 @@
 import type {
   BrazeCanvasListItem,
   BrazeCanvasDataSummary,
+  BrazeCanvasDataSeries,
   BrazeSegmentListItem,
   BrazeSegmentDataSeries,
 } from "@/types/braze";
@@ -63,6 +64,21 @@ export async function getCanvasDataSummary(
     length: String(length),
     ending_at: ending,
     include_variant_breakdown: "false",
+    include_step_breakdown: "true",
+  });
+}
+
+export async function getCanvasDataSeries(
+  canvasId: string,
+  length = 7
+): Promise<BrazeCanvasDataSeries> {
+  const ending = new Date().toISOString();
+  return brazeFetch<BrazeCanvasDataSeries>("/canvas/data_series", {
+    canvas_id: canvasId,
+    length: String(length),
+    ending_at: ending,
+    include_variant_breakdown: "false",
+    include_step_breakdown: "true",
   });
 }
 

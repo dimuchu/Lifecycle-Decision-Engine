@@ -8,13 +8,90 @@ export interface BrazeCanvasListItem {
 }
 
 export interface BrazeCanvasDataSummary {
-  data: {
-    name: string;
-    total_stats: {
-      revenue: number;
-      entries: number;
-      conversions: number;
+  data?: {
+    name?: string;
+    total_stats?: {
+      revenue?: number;
+      entries?: number;
+      conversions?: number;
+      messages_sent?: number;
+      total_revenue?: number;
+      total_entries?: number;
+      total_conversions?: number;
+      total_messages_sent?: number;
     };
+    variant_stats?: Record<
+      string,
+      {
+        name?: string;
+        revenue?: number;
+        conversions?: number;
+        conversions_by_entry_time?: number;
+        entries?: number;
+      }
+    >;
+    step_stats?: Record<
+      string,
+      {
+        name?: string;
+        revenue?: number;
+        conversions?: number;
+        conversions_by_entry_time?: number;
+        messages?: Record<
+          string,
+          Array<{
+            sent?: number;
+            opens?: number;
+            unique_opens?: number;
+            clicks?: number;
+          }>
+        >;
+      }
+    >;
+  };
+}
+
+export interface BrazeCanvasDataSeries {
+  data?: {
+    name?: string;
+    stats?: Array<{
+      time: string;
+      total_stats?: {
+        revenue?: number;
+        entries?: number;
+        conversions?: number;
+        conversions_by_entry_time?: number;
+      };
+      variant_stats?: Record<
+        string,
+        {
+          name?: string;
+          revenue?: number;
+          conversions?: number;
+          conversions_by_entry_time?: number;
+          entries?: number;
+        }
+      >;
+      step_stats?: Record<
+        string,
+        {
+          name?: string;
+          revenue?: number;
+          conversions?: number;
+          conversions_by_entry_time?: number;
+          messages?: Record<
+            string,
+            Array<{
+              sent?: number;
+              opens?: number;
+              unique_opens?: number;
+              clicks?: number;
+            }>
+          >;
+        }
+      >;
+    }>;
+    message?: string;
   };
 }
 
