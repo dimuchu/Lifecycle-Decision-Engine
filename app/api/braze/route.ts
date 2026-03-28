@@ -76,6 +76,10 @@ export async function GET() {
             const series = await getSegmentDataSeries(s.id, 7);
             const points = series.data ?? [];
             const sizes = points.map((p) => p.size);
+            // Drop trailing zeros (incomplete / future day reported by Braze)
+            while (sizes.length > 0 && sizes[sizes.length - 1] === 0) {
+              sizes.pop();
+            }
             const currentSize = sizes.at(-1) ?? 0;
             const firstSize = sizes.at(0) ?? 0;
             const trend7d =
