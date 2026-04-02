@@ -1,8 +1,17 @@
 "use client";
 
 import { useMemo, useState, type ReactNode } from "react";
-import clsx from "clsx";
+import { cn } from "@/lib/utils";
 import type { SortDirection } from "@/types/braze";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { ArrowDown, ArrowUp, ArrowUpDown } from "lucide-react";
 
 export interface Column<T> {
   key: keyof T;
@@ -47,63 +56,61 @@ export default function SortableTable<T>({
   }
 
   return (
-    <div className="overflow-x-auto rounded-lg border border-gray-200 bg-white shadow-sm">
-      <table className="w-full text-sm">
-        <thead>
-          <tr className="border-b border-gray-200 bg-gray-50">
+    <Table>
+      <TableHeader>
+        <TableRow>
+          {columns.map((col) => (
+            <TableHead
+              key={String(col.key)}
+              onClick={() => handleSort(col.key)}
+              className={cn(
+                "cursor-pointer select-none transition-colors hover:text-foreground",
+                col.numeric && "text-right"
+              )}
+            >
+              <span className="inline-flex items-center gap-1">
+                {col.label}
+                {sortKey === col.key ? (
+                  sortDir === "asc" ? (
+                    <ArrowUp className="size-3" />
+                  ) : (
+                    <ArrowDown className="size-3" />
+                  )
+                ) : (
+                  <ArrowUpDown className="size-3 opacity-30" />
+                )}
+              </span>
+            </TableHead>
+          ))}
+        </TableRow>
+      </TableHeader>
+      <TableBody>
+        {sorted.map((row, i) => (
+          <TableRow key={i}>
             {columns.map((col) => (
-              <th
+              <TableCell
                 key={String(col.key)}
-                onClick={() => handleSort(col.key)}
-                className={clsx(
-                  "cursor-pointer select-none px-4 py-3 text-left font-medium text-gray-600 hover:text-gray-900 transition-colors",
+                className={cn(
+                  "tabular-nums",
                   col.numeric && "text-right"
                 )}
               >
-                {col.label}
-                {sortKey === col.key && (
-                  <span className="ml-1">
-                    {sortDir === "asc" ? "↑" : "↓"}
-                  </span>
-                )}
-              </th>
+                {col.render(row)}
+              </TableCell>
             ))}
-          </tr>
-        </thead>
-        <tbody>
-          {sorted.map((row, i) => (
-            <tr
-              key={i}
-              className={clsx(
-                "border-b border-gray-100 transition-colors hover:bg-gray-50",
-                i % 2 === 1 && "bg-gray-50/50"
-              )}
+          </TableRow>
+        ))}
+        {sorted.length === 0 && (
+          <TableRow>
+            <TableCell
+              colSpan={columns.length}
+              className="h-24 text-center text-muted-foreground"
             >
-              {columns.map((col) => (
-                <td
-                  key={String(col.key)}
-                  className={clsx(
-                    "px-4 py-3 tabular-nums",
-                    col.numeric && "text-right"
-                  )}
-                >
-                  {col.render(row)}
-                </td>
-              ))}
-            </tr>
-          ))}
-          {sorted.length === 0 && (
-            <tr>
-              <td
-                colSpan={columns.length}
-                className="px-4 py-8 text-center text-gray-400"
-              >
-                No data available
-              </td>
-            </tr>
-          )}
-        </tbody>
-      </table>
-    </div>
+              No data available
+            </TableCell>
+          </TableRow>
+        )}
+      </TableBody>
+    </Table>
   );
 }

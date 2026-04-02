@@ -3,12 +3,19 @@
 import SortableTable, { type Column } from "./SortableTable";
 import { formatNumber, formatCurrency } from "@/lib/formatters";
 import type { CanvasRow } from "@/types/braze";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 
 const columns: Column<CanvasRow>[] = [
   {
     key: "name",
     label: "Canvas",
-    render: (r) => <span className="font-medium text-gray-900">{r.name}</span>,
+    render: (r) => <span className="font-medium">{r.name}</span>,
   },
   {
     key: "entries",
@@ -42,16 +49,21 @@ interface CanvasTableProps {
 
 export default function CanvasTable({ data }: CanvasTableProps) {
   return (
-    <section>
-      <h2 className="mb-3 text-lg font-semibold text-gray-900">
-        Canvas Comparison
-      </h2>
-      <SortableTable
-        columns={columns}
-        data={data}
-        defaultSortKey="entries"
-        defaultSortDir="desc"
-      />
-    </section>
+    <Card>
+      <CardHeader>
+        <CardTitle>Canvas Comparison</CardTitle>
+        <CardDescription>
+          Performance metrics across active canvases (last 7 days)
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        <SortableTable
+          columns={columns}
+          data={data}
+          defaultSortKey="entries"
+          defaultSortDir="desc"
+        />
+      </CardContent>
+    </Card>
   );
 }

@@ -3,29 +3,27 @@
 import SortableTable, { type Column } from "./SortableTable";
 import Sparkline from "./Sparkline";
 import { formatNumber, formatTrend } from "@/lib/formatters";
-import clsx from "clsx";
+import { Badge } from "@/components/ui/badge";
 import type { SegmentRow } from "@/types/braze";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 
 function TrendBadge({ value }: { value: number }) {
-  return (
-    <span
-      className={clsx(
-        "inline-block rounded-full px-2 py-0.5 text-xs font-medium",
-        value > 10 && "bg-green-100 text-green-700",
-        value < -10 && "bg-red-100 text-red-700",
-        value >= -10 && value <= 10 && "bg-yellow-100 text-yellow-700"
-      )}
-    >
-      {formatTrend(value)}
-    </span>
-  );
+  const variant =
+    value > 10 ? "default" : value < -10 ? "destructive" : "secondary";
+  return <Badge variant={variant}>{formatTrend(value)}</Badge>;
 }
 
 const columns: Column<SegmentRow>[] = [
   {
     key: "name",
     label: "Segment",
-    render: (r) => <span className="font-medium text-gray-900">{r.name}</span>,
+    render: (r) => <span className="font-medium">{r.name}</span>,
   },
   {
     key: "currentSize",
@@ -52,16 +50,21 @@ interface SegmentHealthProps {
 
 export default function SegmentHealth({ data }: SegmentHealthProps) {
   return (
-    <section>
-      <h2 className="mb-3 text-lg font-semibold text-gray-900">
-        Segment Health
-      </h2>
-      <SortableTable
-        columns={columns}
-        data={data}
-        defaultSortKey="currentSize"
-        defaultSortDir="desc"
-      />
-    </section>
+    <Card>
+      <CardHeader>
+        <CardTitle>Segment Health</CardTitle>
+        <CardDescription>
+          Audience segments with analytics tracking enabled
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        <SortableTable
+          columns={columns}
+          data={data}
+          defaultSortKey="currentSize"
+          defaultSortDir="desc"
+        />
+      </CardContent>
+    </Card>
   );
 }
