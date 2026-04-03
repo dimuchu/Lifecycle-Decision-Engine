@@ -11,9 +11,10 @@ import type { BrazeSnapshot, CanvasRow, SegmentRow } from "@/types/braze";
 
 export const dynamic = "force-dynamic";
 
-const CACHE_KEY = "braze_snapshot_v2";
+const CACHE_KEY_PREFIX = "braze_snapshot_v2";
 const MAX_CANVASES = 20;
-const MAX_SEGMENTS = 20;
+const DEFAULT_SEGMENTS = 20;
+const MAX_SEGMENTS_CAP = 100;
 
 interface CanvasMetrics {
   entries: number;
@@ -130,9 +131,18 @@ function mergeCanvasMetrics(
   };
 }
 
-export async function GET() {
+export async function GET(request: Request) {
+  // Parse segment limit from query params
+  const { searchParams } = new URL(request.url);
+  const segmentsParam = parseInt(searchParams.get("segments") ?? "", 10);
+  const maxSegments = Number.isFinite(segmentsParam)
+    ? Math.max(1, Math.min(segmentsParam, MAX_SEGMENTS_CAP))
+    : DEFAULT_SEGMENTS;
+
+  const cacheKey = `${CACHE_KEY_PREFIX}_seg${maxSegments}`;
+
   // Check cache first
-  const cached = getFromCache<BrazeSnapshot>(CACHE_KEY);
+  const cached = getFromCache<BrazeSnapshot>(cacheKey);
   if (cached) {
     return NextResponse.json(cached, {
       headers: { "X-Cache": "HIT" },
@@ -158,7 +168,7 @@ export async function GET() {
 
     // Limit to top N
     const canvasSlice = allCanvases.slice(0, MAX_CANVASES);
-    const segmentSlice = trackableSegments.slice(0, MAX_SEGMENTS);
+    const segmentSlice = trackableSegments.slice(0, maxSegments);
 
     // Step 3: Fetch details in parallel
     const [canvasDetails, segmentDetails] = await Promise.all([
@@ -243,7 +253,7 @@ export async function GET() {
       fetchedAt: new Date().toISOString(),
     };
 
-    setInCache(CACHE_KEY, snapshot);
+    setInCache(cacheKey, snapshot);
 
     return NextResponse.json(snapshot, {
       headers: { "X-Cache": "MISS" },
