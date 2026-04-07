@@ -5,6 +5,7 @@ import type {
   BrazeSegmentListItem,
   BrazeSegmentDataSeries,
 } from "@/types/braze";
+import type { BrazeCanvasDetails } from "@/types/canvas-audit";
 
 const CANVAS_API_KEY = process.env.BRAZE_CANVAS_API_KEY ?? "";
 const SEGMENT_API_KEY = process.env.BRAZE_SEGMENT_API_KEY ?? "";
@@ -78,6 +79,28 @@ export async function getCanvasDataSeries(
     length: String(length),
     ending_at: ending,
     include_variant_breakdown: "false",
+    include_step_breakdown: "true",
+  });
+}
+
+export async function getCanvasDetails(
+  canvasId: string
+): Promise<BrazeCanvasDetails> {
+  return brazeFetch<BrazeCanvasDetails>("/canvas/details", {
+    canvas_id: canvasId,
+  });
+}
+
+export async function getCanvasDataSummaryFull(
+  canvasId: string,
+  length = 14
+): Promise<BrazeCanvasDataSummary> {
+  const ending = new Date().toISOString();
+  return brazeFetch<BrazeCanvasDataSummary>("/canvas/data_summary", {
+    canvas_id: canvasId,
+    length: String(length),
+    ending_at: ending,
+    include_variant_breakdown: "true",
     include_step_breakdown: "true",
   });
 }

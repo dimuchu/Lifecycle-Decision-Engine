@@ -17,6 +17,6 @@ export function getFromCache<T>(key: string): T | null {
   return entry.data as T;
 }
 
-export function setInCache<T>(key: string, data: T): void {
-  store.set(key, { data, expiresAt: Date.now() + TTL_MS });
+export function setInCache<T>(key: string, data: T, ttlMs: number = TTL_MS): void {
+  store.set(key, { data, expiresAt: Date.now() + ttlMs });
 }

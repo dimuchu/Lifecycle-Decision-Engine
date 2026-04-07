@@ -1,5 +1,6 @@
 import {
   LayoutDashboard,
+  ClipboardCheck,
   BrainCircuit,
   FlaskConical,
   Settings,
@@ -19,6 +20,11 @@ export const navItems: NavItem[] = [
     url: "/",
     icon: LayoutDashboard,
     isActive: true,
+  },
+  {
+    title: "Canvas Audit",
+    url: "/canvas-audit",
+    icon: ClipboardCheck,
   },
   {
     title: "AI Summary",

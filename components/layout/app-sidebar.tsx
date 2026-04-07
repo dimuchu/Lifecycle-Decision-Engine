@@ -43,13 +43,15 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             <SidebarMenu>
               {navItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton
-                    tooltip={item.title}
-                    isActive={item.isActive}
-                  >
-                    <item.icon />
-                    <span>{item.title}</span>
-                  </SidebarMenuButton>
+                  <a href={item.url}>
+                    <SidebarMenuButton
+                      tooltip={item.title}
+                      isActive={item.isActive}
+                    >
+                      <item.icon />
+                      <span>{item.title}</span>
+                    </SidebarMenuButton>
+                  </a>
                 </SidebarMenuItem>
               ))}
             </SidebarMenu>
